@@ -4,6 +4,8 @@
 - [ ] Implement video downloader
 - [ ] Implement video networks
 - [ ] SSL training
+- [ ] Evaluate on downstream CV tasks
+- [ ] Evaluate on downstream RL tasks (Atari etc.) to test interacting with the world
 
 
 ## CV tasks:
