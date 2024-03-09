@@ -10,14 +10,14 @@
 
 ## CV tasks:
 
-- object detection
-- segmentation
-- facial recognition
-- pose estimation
-- action recognition/classification
+- [ ] object detection
+- [ ] segmentation
+- [ ] facial recognition
+- [ ] pose estimation
+- [ ] action recognition/classification
 
 ## Video categories:
-- Driving
-- Atari games
-- Animals
-- Humans
+- [x] Driving
+- [ ] Atari games
+- [ ] Animals
+- [ ] Humans
