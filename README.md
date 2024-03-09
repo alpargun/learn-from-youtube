@@ -1,7 +1,8 @@
 # TODO
 
-- [ ] Save youtube links
-- [ ] Implement video downloader
+- [x] Save youtube links
+- [x] Implement video downloader
+- [ ] Preprocessing for videos
 - [ ] Implement video networks
 - [ ] SSL training
 - [ ] Evaluate on downstream CV tasks
