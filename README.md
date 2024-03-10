@@ -1,4 +1,11 @@
-# TODO
+# Learn From YouTube Videos
+
+This repository aims to create on-demand video datasets from YouTube, which can then be used to train video networks through self-supervised learning.
+A .csv file with YouTube video IDs is enough to automatically download and preprocess all videos.
+Additionally, all videos from a single channel/user can be downloaded automatically.
+
+
+## TODO
 
 - [x] Save youtube links
 - [x] Implement video downloader
@@ -16,6 +23,7 @@
 - [ ] facial recognition
 - [ ] pose estimation
 - [ ] action recognition/classification
+- [ ] video compression
 
 ## Video categories:
 - [x] Driving
