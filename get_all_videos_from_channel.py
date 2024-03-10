@@ -33,7 +33,7 @@ CSV_PATH = "video-links/driving/" + str(c.channel_name) + ".csv"
 
 with open(CSV_PATH, 'w', newline='') as file:
     writer = csv.writer(file)
-
+    writer.writerow(["id", "title", "duration"])
     for url in p:
         yt = YouTube(url)
 
