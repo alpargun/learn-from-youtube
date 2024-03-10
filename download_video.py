@@ -1,6 +1,7 @@
 
 #%% Imports
 
+import datetime
 import os
 import subprocess
 from pytube import YouTube
@@ -9,7 +10,7 @@ from pytube import YouTube
 #%%
 
 BASE_URL = "http://youtube.com/watch?v="
-video_id = "eR5vsN1Lq4E"
+video_id =  "_VwmNdw5BYc" # "eR5vsN1Lq4E"
 video_url = BASE_URL + video_id
 
 yt = YouTube(video_url)
@@ -18,7 +19,7 @@ yt = YouTube(video_url)
 
 print(yt.title)
 print(yt.description)
-print(str(yt.length / 60) + " minutes")
+print(str(datetime.timedelta(seconds=yt.length)))
 
 #%% Download the video
 
