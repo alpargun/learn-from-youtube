@@ -14,7 +14,6 @@ from decord import VideoReader, cpu
 
 import torch
 
-# %%
 
 logger = getLogger()
 
@@ -63,12 +62,13 @@ print("avg fps of video: ", vr.get_avg_fps())
 
 #%%
 total_frames = len(vr)
+duration = None # 10 # 10 sec clips
 fpc = frames_per_clip
 fstp = frame_step
-if total_frames is not None:
+if duration is not None:
     try:
         fps = vr.get_avg_fps()
-        fstp = int(total_frames / fpc)
+        fstp = int(duration * fps / fpc)
     except Exception as e:
         warnings.warn(e)
 clip_len = int(fpc * fstp)
@@ -79,8 +79,6 @@ if len(vr) < clip_len:
 vr.seek(0)  # Go to start of video before sampling frames
 
 #%%
-
-
 # Partition video into equal sized segments and sample each clip
 # from a different segment
 partition_len = len(vr) // num_clips
@@ -128,64 +126,18 @@ for i in range(num_clips):
 
 buffer = vr.get_batch(all_indices).asnumpy()
 buffer, clip_indices
+print("clip indices: ", clip_indices)
 
-# %%
+
+# %% Display all frames in the clip
+
 from matplotlib import pyplot as plt
 
-for i in range(16):
-    plt.imshow(buffer[i])
-    plt.show()
 
-
-
-
+for idx, val in enumerate(buffer):
+    plt.figure(1); plt.clf()
+    plt.imshow(val)
+    plt.title('Frame ' + str(idx))
+    plt.pause(0.5)
 
 # %%
-
-class CustomVideoDataset(torch.utils.data.Dataset):
-    """ Video dataset. Can be used for image dataset by setting frames as 1. """
-
-    def __init__(
-            self,
-            data_path,
-            frames_per_clip=16,
-            frame_step=4,
-            num_clips=1,
-            filter_long_videos=int(10**9),
-            random_clip_sampling=True
-    ):
-        self.data_path = data_path
-        self.frames_per_clip = frames_per_clip
-        self.frame_step = frame_step
-        self.num_clips = num_clips
-        self.filter_long_videos = filter_long_videos
-        self.random_clip_sampling = random_clip_sampling
-
-        if VideoReader is None:
-            raise ImportError('Unable to import "decord", which is required to read videos. For MacOS, check eva-decord')
-        
-        # Load video paths and labels
-        # Load video paths and labels
-        data = pd.read_csv(data_path, header=None, delimiter=",")
-        self.samples = data.iloc[:,0].to_list()
-        self.labels = data.iloc[:,1].to_list() # will be disregarded for SSL training
-
-
-    def __getitem__(self, idx):
-
-        vid_path = self.data_path
-
-        video = read_video(vid_path)
-        label = self.labels[idx]
-        
-        return video, label
-
-    def __len__(self):
-        return len(self.samples)
-
-
-#%%
-
-my_data = CustomVideoDataset(data_path=data_path)
-my_data.__len__()
-
