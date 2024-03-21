@@ -5,13 +5,17 @@ This repository aims to create on-demand video datasets from YouTube, which can 
 A .csv file with YouTube video IDs is enough to automatically download and preprocess all videos.
 Additionally, all videos from a single channel/user can be downloaded automatically.
 
+## Progress so far
+- Can download Youtube videos from a .csv file with URLs
+- Can clip videos as $n$ frames with $m$ step between frames to prepare input for video models
+
 
 ## TODO
 
 - [x] Save youtube links
 - [x] Implement video downloader
 - [ ] Prepare video dataset class
-- [ ] Preprocessing for videos
+- [ ] Preprocessing/Transform for videos
 - [ ] Implement video networks
 - [ ] Implement image networks
 - [ ] Implement own network 
@@ -31,6 +35,6 @@ Additionally, all videos from a single channel/user can be downloaded automatica
 
 ## Video categories:
 - [x] Driving
-- [ ] Atari games
+- [x] Atari games
 - [ ] Animals
 - [ ] Humans
