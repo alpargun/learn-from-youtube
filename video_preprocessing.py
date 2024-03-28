@@ -7,6 +7,7 @@ import warnings
 
 from logging import getLogger
 
+from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
 
@@ -18,6 +19,7 @@ import torch
 logger = getLogger()
 
 #%%
+rng = np.random.default_rng(seed=5)
 
 data_path = "video_paths.csv"
 
@@ -91,7 +93,7 @@ for i in range(num_clips):
         # clip_len frames within the segment
         end_indx = clip_len
         if random_clip_sampling:
-            end_indx = np.random.randint(clip_len, partition_len)
+            end_indx = rng.integers(clip_len, partition_len) #np.random.randint(clip_len, partition_len)
         start_indx = end_indx - clip_len
         indices = np.linspace(start_indx, end_indx, num=fpc)
         indices = np.clip(indices, start_indx, end_indx-1).astype(np.int64)
@@ -131,13 +133,18 @@ print("clip indices: ", clip_indices)
 
 # %% Display all frames in the clip
 
-from matplotlib import pyplot as plt
-
-
 for idx, val in enumerate(buffer):
     plt.figure(1); plt.clf()
     plt.imshow(val)
     plt.title('Frame ' + str(idx))
-    plt.pause(0.5)
+    plt.pause(0.2)
+
+# %% Show all frames in one figure
+
+fig, axes = plt.subplots(4,4)
+for i in range(4):
+    for j in range(4):
+        axes[i,j].imshow(buffer[i*4+j])
+fig.show()
 
 # %%
