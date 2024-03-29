@@ -10,7 +10,7 @@ import pandas as pd
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import torch.utils.data as data
+from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from CustomVideoDataset import CustomVideoDataset
@@ -43,7 +43,7 @@ dataset = CustomVideoDataset(
     allow_clip_overlap=False
 )
 
-logger.info('VideoDataset dataset created')
+logger.info('CustomVideoDataset dataset created')
 
 #dist_sampler = torch.utils.data.distributed.DistributedSampler(
     #dataset,
@@ -57,7 +57,7 @@ DEVICE = "cuda"
 PIN_MEMORY = True
 NUM_WORKERS = 0
 
-data_loader = torch.utils.data.DataLoader(
+data_loader = DataLoader(
     dataset,
     #collate_fn=collator,
     #sampler=dist_sampler,
@@ -65,7 +65,8 @@ data_loader = torch.utils.data.DataLoader(
     #drop_last=drop_last,
     pin_memory=PIN_MEMORY,
     num_workers=NUM_WORKERS,
-    #persistent_workers=num_workers > 0
+    #persistent_workers=num_workers > 0,
+    shuffle=False
 )
 logger.info('VideoDataset unsupervised data loader created')
 
@@ -82,12 +83,13 @@ for epoch in range(N_EPOCHS):
 
             vid, label, clip_indices, path_video = batch
             print("clip indices: ", clip_indices)
-            print("vid shape: ", vid.shape)
+            print(f"frame shape: ", vid[0].shape)
             fig, axes = plt.subplots(4,4)
             fig.suptitle(path_video, fontsize=16)
             for i in range(4):
                 for j in range(4):
-                    axes[i,j].imshow(vid[0][i*4+j])
+                    axes[i,j].imshow(vid[i*4+j].squeeze())
             fig.show()
-            
+
+
 # %%

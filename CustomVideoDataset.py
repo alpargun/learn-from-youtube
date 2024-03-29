@@ -1,19 +1,21 @@
 
+import numbers
 import os
 import pathlib
 import warnings
 
 from logging import getLogger
 
+import cv2
 import numpy as np
 import pandas as pd
+import torch
 
 from decord import VideoReader, cpu
 
-import torch
-
 
 logger = getLogger()
+rng = np.random.default_rng(seed=5)
 
 
 class CustomVideoDataset(torch.utils.data.Dataset):
@@ -27,7 +29,8 @@ class CustomVideoDataset(torch.utils.data.Dataset):
             num_clips=1,
             filter_long_videos=int(10**9),
             random_clip_sampling=True,
-            allow_clip_overlap=False
+            allow_clip_overlap=False,
+            resolution=224
     ):
         self.data_path = data_path
         self.frames_per_clip = frames_per_clip
@@ -36,6 +39,7 @@ class CustomVideoDataset(torch.utils.data.Dataset):
         self.filter_long_videos = filter_long_videos
         self.random_clip_sampling = random_clip_sampling
         self.allow_clip_overlap = allow_clip_overlap
+        self.resolution = resolution
 
         if VideoReader is None:
             raise ImportError('Unable to import "decord", which is required to read videos. For MacOS, check eva-decord')
@@ -49,7 +53,6 @@ class CustomVideoDataset(torch.utils.data.Dataset):
 
     def __getitem__(self, index):
 
-        vid_path = self.data_path
         sample = self.samples[index]
 
         # Keep trying to load videos until you find a valid sample
@@ -58,7 +61,7 @@ class CustomVideoDataset(torch.utils.data.Dataset):
             buffer, clip_indices = self.load_video_decord(sample)  # [T H W 3]
             loaded_video = len(buffer) > 0
             if not loaded_video:
-                index = np.random.randint(self.__len__())
+                index = rng.integers(self.__len__())
                 sample = self.samples[index]
 
         # Label/annotations for video
@@ -68,10 +71,15 @@ class CustomVideoDataset(torch.utils.data.Dataset):
             """ Split video into a list of clips """
             fpc = self.frames_per_clip
             nc = self.num_clips
-            return [video[i*fpc:(i+1)*fpc] for i in range(nc)]
+            return [video[i*fpc:(i+1)*fpc] for i in range(nc)][0]
         
         #buffer = split_into_clips(buffer)
-        
+
+        #buffer = [self.transform(clip) for clip in buffer]
+        buffer = [self.resize_frame(frame, (self.resolution, self.resolution)) for frame in buffer]
+        print('len buffer: ', len(buffer))
+        print('shape buffer[0]: ', buffer[0].shape)
+
         return buffer, label, clip_indices, sample
 
 
@@ -128,7 +136,7 @@ class CustomVideoDataset(torch.utils.data.Dataset):
                 # clip_len frames within the segment
                 end_indx = clip_len
                 if self.random_clip_sampling:
-                    end_indx = np.random.randint(clip_len, partition_len)
+                    end_indx = rng.integers(clip_len, partition_len)
                 start_indx = end_indx - clip_len
                 indices = np.linspace(start_indx, end_indx, num=fpc)
                 indices = np.clip(indices, start_indx, end_indx-1).astype(np.int64)
@@ -167,9 +175,43 @@ class CustomVideoDataset(torch.utils.data.Dataset):
 
         return buffer, clip_indices
 
+    def resize_frame(self, img, size, interpolation='bilinear'):
+
+        if isinstance(size, numbers.Number):
+            im_h, im_w, im_c = img.shape
+            # Min spatial dim already matches minimal size
+            if (im_w <= im_h and im_w == size) or (im_h <= im_w
+                                                and im_h == size):
+                return img
+            new_h, new_w = self.get_resize_sizes(im_h, im_w, size)
+            size = (new_w, new_h)
+            
+        else:
+            size = size[0], size[1]
+
+        if interpolation == 'bilinear':
+            np_inter = cv2.INTER_LINEAR
+        else:
+            np_inter = cv2.INTER_NEAREST
+        
+        scaled = cv2.resize(img, size, interpolation=np_inter)
+        return scaled
+
+        
+    def get_resize_sizes(self, im_h, im_w, size):
+
+        if im_w < im_h:
+            ow = size
+            oh = int(size * im_h / im_w)
+        else:
+            oh = size
+            ow = int(size * im_w / im_h)
+        return oh, ow
+
+
     def __len__(self):
         return len(self.samples)
-
+    
 
 #%%
 data_path = "video_paths.csv"
