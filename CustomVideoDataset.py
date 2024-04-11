@@ -71,14 +71,15 @@ class CustomVideoDataset(torch.utils.data.Dataset):
             """ Split video into a list of clips """
             fpc = self.frames_per_clip
             nc = self.num_clips
-            return [video[i*fpc:(i+1)*fpc] for i in range(nc)][0]
+            return [video[i*fpc:(i+1)*fpc] for i in range(nc)]
         
-        #buffer = split_into_clips(buffer)
+        buffer = split_into_clips(buffer)
 
         #buffer = [self.transform(clip) for clip in buffer]
-        buffer = [self.resize_frame(frame, (self.resolution, self.resolution)) for frame in buffer]
+        
+        buffer = [self.resize_clip(clip, (self.resolution, self.resolution)) for clip in buffer]
+        
         print('len buffer: ', len(buffer))
-        print('shape buffer[0]: ', buffer[0].shape)
 
         return buffer, label, clip_indices, sample
 
@@ -175,14 +176,14 @@ class CustomVideoDataset(torch.utils.data.Dataset):
 
         return buffer, clip_indices
 
-    def resize_frame(self, img, size, interpolation='bilinear'):
+    def resize_clip(self, clip, size, interpolation='bilinear'):
 
         if isinstance(size, numbers.Number):
-            im_h, im_w, im_c = img.shape
+            im_h, im_w, im_c = clip[0].shape
             # Min spatial dim already matches minimal size
             if (im_w <= im_h and im_w == size) or (im_h <= im_w
                                                 and im_h == size):
-                return img
+                return clip
             new_h, new_w = self.get_resize_sizes(im_h, im_w, size)
             size = (new_w, new_h)
             
@@ -193,8 +194,10 @@ class CustomVideoDataset(torch.utils.data.Dataset):
             np_inter = cv2.INTER_LINEAR
         else:
             np_inter = cv2.INTER_NEAREST
-        
-        scaled = cv2.resize(img, size, interpolation=np_inter)
+                
+        scaled = [
+            cv2.resize(img, size, interpolation=np_inter) for img in clip
+        ]
         return scaled
 
         

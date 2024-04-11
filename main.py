@@ -38,7 +38,7 @@ dataset = CustomVideoDataset(
     data_path=data_path,
     frames_per_clip=16,
     frame_step=4,
-    num_clips=1,
+    num_clips=2,
     random_clip_sampling=True,
     allow_clip_overlap=False
 )
@@ -82,14 +82,16 @@ for epoch in range(N_EPOCHS):
             tepoch.set_description(f"Epoch {epoch}")
 
             vid, label, clip_indices, path_video = batch
-            print("clip indices: ", clip_indices)
-            print(f"frame shape: ", vid[0].shape)
-            fig, axes = plt.subplots(4,4)
-            fig.suptitle(path_video, fontsize=16)
-            for i in range(4):
-                for j in range(4):
-                    axes[i,j].imshow(vid[i*4+j].squeeze())
-            fig.show()
+
+            for idx, clip in enumerate(vid):
+                print("clip indices: ", clip_indices[idx])
+
+                fig, axes = plt.subplots(4,4)
+                fig.suptitle(f"{path_video}_clip{idx}", fontsize=16)
+                for i in range(4):
+                    for j in range(4):
+                        axes[i,j].imshow(clip[i*4+j].squeeze()) # 0th batch
+                fig.show()
 
 
 # %%
