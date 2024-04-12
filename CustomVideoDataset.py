@@ -74,12 +74,12 @@ class CustomVideoDataset(torch.utils.data.Dataset):
             return [video[i*fpc:(i+1)*fpc] for i in range(nc)]
         
         buffer = split_into_clips(buffer)
-
-        #buffer = [self.transform(clip) for clip in buffer]
         
         buffer = [self.resize_clip(clip, (self.resolution, self.resolution)) for clip in buffer]
-        
-        print('len buffer: ', len(buffer))
+
+        #buffer = [self.transform(clip) for clip in buffer]
+
+        buffer = [np.stack(clip) for clip in buffer] # T C H W for each clip
 
         return buffer, label, clip_indices, sample
 
@@ -171,8 +171,6 @@ class CustomVideoDataset(torch.utils.data.Dataset):
             all_indices.extend(list(indices))
 
         buffer = vr.get_batch(all_indices).asnumpy()
-        
-        #print("clip indices: ", clip_indices)
 
         return buffer, clip_indices
 

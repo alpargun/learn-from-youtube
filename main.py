@@ -90,7 +90,7 @@ for epoch in range(N_EPOCHS):
                 fig.suptitle(f"{path_video}_clip{idx}", fontsize=16)
                 for i in range(4):
                     for j in range(4):
-                        axes[i,j].imshow(clip[i*4+j].squeeze()) # 0th batch
+                        axes[i,j].imshow(clip[0][i*4+j]) # 0th batch
                 fig.show()
 
 

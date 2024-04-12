@@ -8,7 +8,8 @@ Additionally, all videos from a single channel/user can be downloaded automatica
 ## Progress so far
 - Can download Youtube videos from a .csv file with URLs
 - Can clip videos as $n$ frames with $m$ step between frames to prepare input for video models
-- Implements custom video dataset class and dataloaders. Visualizes clips from batches for debugging 
+- Can sample multiple clips from the same video.
+- Implements custom video dataset class and dataloaders. Visualizes clips from batches for debugging
 
 
 ## TODO
@@ -16,9 +17,9 @@ Additionally, all videos from a single channel/user can be downloaded automatica
 - [x] Save youtube links
 - [x] Implement video downloader
 - [x] Prepare video dataset class
-- [ ] Preprocessing/Transform for videos (e.g. resolution, clipping)
-- [ ] Implement video networks
-- [ ] Implement image networks
+- [x] Preprocessing/Transform for videos (e.g. resolution, clipping)
+- [ ] Test inference of downloaded video networks
+- [ ] Test inference of downloaded image networks
 - [ ] Implement own network 
 - [ ] SSL training
 - [ ] Evaluate on downstream CV tasks
