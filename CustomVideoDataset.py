@@ -30,7 +30,8 @@ class CustomVideoDataset(torch.utils.data.Dataset):
             filter_long_videos=int(10**9),
             random_clip_sampling=True,
             allow_clip_overlap=False,
-            resolution=224
+            resolution=224,
+            transform=None
     ):
         self.data_path = data_path
         self.frames_per_clip = frames_per_clip
@@ -40,6 +41,7 @@ class CustomVideoDataset(torch.utils.data.Dataset):
         self.random_clip_sampling = random_clip_sampling
         self.allow_clip_overlap = allow_clip_overlap
         self.resolution = resolution
+        self.transform = transform
 
         if VideoReader is None:
             raise ImportError('Unable to import "decord", which is required to read videos. For MacOS, check eva-decord')
@@ -78,7 +80,9 @@ class CustomVideoDataset(torch.utils.data.Dataset):
         buffer = [self.resize_clip(clip, (self.resolution, self.resolution)) for clip in buffer]
 
         #buffer = [self.transform(clip) for clip in buffer]
-
+        if self.transform:
+            buffer = [self.transform(clip) for clip in buffer]
+            
         buffer = [np.stack(clip) for clip in buffer] # T C H W for each clip
 
         return buffer, label, clip_indices, sample
