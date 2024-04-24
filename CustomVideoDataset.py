@@ -77,13 +77,14 @@ class CustomVideoDataset(torch.utils.data.Dataset):
         
         buffer = split_into_clips(buffer)
         
-        buffer = [self.resize_clip(clip, (self.resolution, self.resolution)) for clip in buffer]
+        #buffer = [self.resize_clip(clip, (self.resolution, self.resolution)) for clip in buffer]
+        
+        buffer = [np.stack(clip) for clip in buffer] # T C H W for each clip
 
-        #buffer = [self.transform(clip) for clip in buffer]
+        buffer = torch.tensor(buffer, dtype=torch.float32) #torch.from_numpy(buffer).float()
+        
         if self.transform:
             buffer = [self.transform(clip) for clip in buffer]
-            
-        buffer = [np.stack(clip) for clip in buffer] # T C H W for each clip
 
         return buffer, label, clip_indices, sample
 
