@@ -104,11 +104,11 @@ for vid, label, clip_indices, path_video in data_loader:
     for idx, clip in enumerate(vid):
         rows, cols = 2, 4
         fig, axes = plt.subplots(rows,cols)
-        fig.suptitle(f"{path_video}_clip{idx}", fontsize=16)
         for i in range(rows):
             for j in range(cols):
-                img = clip[0][i*4+j].numpy().astype(np.uint8)
-                axes[i,j].imshow((img)) # 0th batch
+                img = clip[0][i*4+j].numpy().astype(np.uint8)  # 0th batch
+                axes[i,j].imshow((img))
+        fig.suptitle(f"{path_video}_clip{idx}", fontsize=12)
         fig.show()
 
         # Pass the input clip through the model

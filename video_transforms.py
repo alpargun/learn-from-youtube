@@ -26,8 +26,8 @@ class VideoTransform(object):
         self.std = torch.tensor(self.normalize[1], dtype=torch.float32)
         
         # Scale PIL and tensor conversions uint8 space by 255.
-        self.mean *= 255.
-        self.std *= 255.
+        #self.mean *= 255.
+        #self.std *= 255.
 
 
     def __call__(self, buffer):
@@ -40,16 +40,18 @@ class VideoTransform(object):
 
         transform=Compose(
             [
+                Lambda(lambda x: x/255.0), # scale between [0,1]
+                NormalizeVideo(self.mean, self.std),
                 ShortSideScale(
                     size=self.side_size
                 ),
                 CenterCropVideo(crop_size=(self.crop_size, self.crop_size))
             ]
         )
-
+        
         buffer = transform(buffer)
 
-        buffer = buffer.permute(1, 2, 3, 0)
+        buffer = buffer.permute(1, 2, 3, 0) # C T H W -> T H W C
 
         return buffer
 
