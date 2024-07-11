@@ -1,1 +1,1 @@
-pytube
+pytube @ git+https://github.com/alpargun/pytube.git
