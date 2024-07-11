@@ -1,3 +1,4 @@
+# Script to test video downloader
 
 #%% Imports
 
@@ -10,15 +11,19 @@ from pytube import YouTube
 #%%
 
 BASE_URL = "http://youtube.com/watch?v="
-video_id =  "_VwmNdw5BYc" # "eR5vsN1Lq4E"
+video_id =  "u3_2gAuPjxM" # "_VwmNdw5BYc" # "eR5vsN1Lq4E"
 video_url = BASE_URL + video_id
 
 yt = YouTube(video_url)
 
+#%% Create stream object
+
+stream = yt.streams.filter(progressive=True, file_extension='mp4', resolution="360p").first() # only_video=True results in double the duration of video
+
 #%% Show video details
 
 print(yt.title)
-print(yt.description)
+print(yt.description) # if called before stream, returns null
 print(str(datetime.timedelta(seconds=yt.length)))
 
 #%% Download the video
@@ -28,7 +33,7 @@ os.makedirs(download_dir, exist_ok=True)
 
 temp_video_name = video_id + "_temp.mp4"
 
-yt.streams.filter(progressive=True, file_extension='mp4', resolution="360p").first().download(output_path=download_dir, filename=temp_video_name) # only_video=True results in double the duration of video
+stream.download(output_path=download_dir, filename=temp_video_name)
 
 
 #%% Remove audio

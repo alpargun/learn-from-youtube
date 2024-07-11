@@ -16,9 +16,12 @@ def download_video(video_id, download_dir, time_start=None, time_end=None):
     try:
         yt = YouTube(video_url)
 
-        # Show video details
-        print(yt.title)
-        print(yt.description)
+        # Get video details
+        title = yt.title
+        description = yt.description
+        
+        print(title)
+        print(description)
         print(str(datetime.timedelta(seconds=yt.length)))
 
         # Download the video
