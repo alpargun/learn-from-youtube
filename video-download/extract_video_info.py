@@ -73,3 +73,26 @@ print(xml_captions)
 
 # %% Directly generate readable captions
 print(caption.generate_srt_captions())
+
+# -------------------------------------------------------------------------------------------------
+#%% Named Entity Recognition to extract info like location, time etc. automatically from text
+
+import spacy
+from spacy import displacy
+
+NER = spacy.load('en_core_web_sm')
+
+ner_desc = NER(description)
+
+for word in ner_desc.ents:
+    print(word.text,word.label_)
+
+# %% Get location info
+
+list_location = [ent.text for ent in ner_desc.ents if (ent.label_ == "GPE" or ent.label_ == "LOC") ]
+list_location
+
+# %% Get time info
+
+list_time = [ent.text for ent in ner_desc.ents if (ent.label_ == "TIME" or ent.label_ == "DATE") ]
+list_time
