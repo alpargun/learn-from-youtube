@@ -55,3 +55,21 @@ df_title = df_title.sort_values(by=['relevance'], ascending=False)
 # Print the extracted keywords and their scores
 df_title
 
+#%% Get captions/subtitles
+
+#yt.bypass_age_gate() # required to get the subtitles
+stream = yt.streams.first() # required to get following portions to work
+
+print(yt.captions) # list caption tracks (languages)
+caption = yt.captions.get_by_language_code('en-US')
+
+#%% JSON captions - in case YouTube changes response structure, parse either XML or JSON
+json_captions = caption.json_captions
+print(json_captions)
+
+#%% XML captions
+xml_captions = caption.xml_captions
+print(xml_captions)
+
+# %% Directly generate readable captions
+print(caption.generate_srt_captions())
