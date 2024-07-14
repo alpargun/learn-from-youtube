@@ -14,6 +14,7 @@ Uses [my PyTube fork](https://github.com/alpargun/pytube) with bug fixes and enh
 - Implements custom video dataset class and dataloaders. Visualizes clips from batches for debugging.
 - Implements video transforms such as cropping, resizing, normalizaton.
 - Can run inference with a downloaded 3D-ResNet50 model on downloaded K400 test set videos.
+- Can run YOLOv8 inference on prepared dataset and visualizes the detections. 
 - Extracts important keywords from video description and title.
 
 ## TODO
@@ -24,7 +25,7 @@ Uses [my PyTube fork](https://github.com/alpargun/pytube) with bug fixes and enh
 - [x] Preprocessing/Transform for videos (e.g. resolution, clipping)
 - [x] Test inference of downloaded video networks
 - [x] Download title and description from videos and extract keywords to label videos
-- [ ] Test inference of downloaded image networks (YOLO)
+- [x] Test inference of downloaded image networks (YOLO)
 - [ ] Implement own network 
 - [ ] SSL training
 - [ ] Evaluate on downstream CV tasks
