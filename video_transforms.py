@@ -22,8 +22,8 @@ class VideoTransform(object):
         self.normalize = normalize
         self.crop_size = 256
 
-        self.mean = torch.tensor(self.normalize[0], dtype=torch.float32)
-        self.std = torch.tensor(self.normalize[1], dtype=torch.float32)
+        self.mean_ = torch.tensor(self.normalize[0], dtype=torch.float32)
+        self.std_ = torch.tensor(self.normalize[1], dtype=torch.float32)
         
         # Scale PIL and tensor conversions uint8 space by 255.
         #self.mean *= 255.
@@ -41,7 +41,7 @@ class VideoTransform(object):
         transform=Compose(
             [
                 Lambda(lambda x: x/255.0), # scale between [0,1]
-                NormalizeVideo(self.mean, self.std),
+                NormalizeVideo(self.mean_, self.std_),
                 ShortSideScale(
                     size=self.side_size
                 ),
@@ -54,6 +54,20 @@ class VideoTransform(object):
         buffer = buffer.permute(1, 2, 3, 0) # C T H W -> T H W C
 
         return buffer
+
+    def img_tensor_denormalize(self, img):
+        """
+        De-normalize a given tensor by multiplying with the std and adding the mean.
+        Args:
+            tensor (tensor): tensor to normalize.
+            mean (tensor or list): mean value to subtract.
+            std (tensor or list): std to divide.
+        """
+        img = img * self.std_
+        img = img + self.mean_
+        img = img * 255.
+        
+        return img
 
 
 def tensor_normalize(tensor, mean, std):
