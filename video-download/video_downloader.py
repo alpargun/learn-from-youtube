@@ -50,6 +50,6 @@ def download_video(video_id, download_dir, time_start=None, time_end=None):
     except VideoPrivate:
         print(f'Video {video_url} is private, skipping.')
     except VideoUnavailable:
-        print(f'Video {video_url} is unavaialable, skipping.')
+        print(f'Video {video_url} is unavailable, skipping.')
     
    

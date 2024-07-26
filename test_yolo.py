@@ -132,13 +132,13 @@ random_image = random.sample(images_data, num_samples)
 plt.figure(figsize=(10,6))
 #for i in range(num_samples):
     #plt.subplot(2,2,i+1)
-img = cv2.imread(random_image[i])
+img = cv2.imread(random_image[0])
 RGB_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 plt.axis('off')
 plt.imshow(RGB_img)
 
 # %% Create a list to store the images
-yolo_outputs = yolo_model.predict(random_image[i])
+yolo_outputs = yolo_model.predict(random_image[0])
 output = yolo_outputs[0]
 box = output.boxes
 names = output.names

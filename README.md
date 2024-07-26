@@ -26,6 +26,7 @@ Uses [my PyTube fork](https://github.com/alpargun/pytube) with bug fixes and enh
 - [x] Test inference of downloaded video networks
 - [x] Download title and description from videos and extract keywords to label videos
 - [x] Test inference of downloaded image networks (YOLO)
+- [ ] Make YOLO predicted bounding boxes interactive for self-labeling/label correction 
 - [ ] Implement own network 
 - [ ] SSL training
 - [ ] Evaluate on downstream CV tasks
